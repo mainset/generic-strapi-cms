@@ -1,0 +1,72 @@
+version: '3'
+services:
+  generic-strapi-cms:
+    container_name: generic-strapi-cms
+    build: .
+    image: generic-strapi-cms:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      RDS_HOSTNAME: generic-strapi-cmsDB
+      RDS_DB_NAME: ${RDS_DB_NAME}
+      RDS_USERNAME: ${RDS_USERNAME}
+      RDS_PORT: ${RDS_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      RDS_PASSWORD: ${RDS_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./config:/opt/app/config
+      - ./src:/opt/app/src
+      - ./package.json:/opt/package.json
+      - ./package-lock.json:/opt/package-lock.json
+
+      - ./.env:/opt/app/.env
+      - ./public/uploads:/opt/app/public/uploads
+    ports:
+      - '1337:1337'
+    networks:
+      - generic-strapi-cms
+    depends_on:
+      - generic-strapi-cmsDB
+
+  generic-strapi-cmsDB:
+    container_name: generic-strapi-cmsDB
+    platform: linux/arm64/v8 #for platform error on Apple M1 chips
+    restart: unless-stopped
+    env_file: .env
+    image: postgres:14.5-alpine
+    environment:
+      POSTGRES_USER: ${RDS_USERNAME}
+      POSTGRES_PASSWORD: ${RDS_PASSWORD}
+      POSTGRES_DB: ${RDS_DB_NAME}
+    volumes:
+      - generic-strapi-cms-data:/var/lib/postgresql/data/ #using a volume
+      #- ./data:/var/lib/postgresql/data/ # if you want to use a bind folder
+
+    ports:
+      - '5432:5432'
+    networks:
+      - generic-strapi-cms
+
+  generic-strapi-cmsAdminer:
+    container_name: generic-strapi-cmsAdminer
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - '9090:8080'
+    environment:
+      - ADMINER_DEFAULT_SERVER=generic-strapi-cmsDB
+    networks:
+      - generic-strapi-cms
+    depends_on:
+      - generic-strapi-cmsDB
+
+volumes:
+  generic-strapi-cms-data:
+
+networks:
+  generic-strapi-cms:
+    name: Generic-strapi-cms
+    driver: bridge
