@@ -1,3 +1,20 @@
+# 🚀 Hello world
+
+Project launched by Docker. To un the project, stop other dockers that can use same ports and run:
+
+```
+docker-compose up
+```
+
+### Documentation
+- [Deploy Strapi to Render](https://forum.strapi.io/t/render-deployment/21932)
+- [Render deployment options](https://render.com/docs/deploy-strapi)
+- [How to Deploy Strapi Docker Container On AWS Elastic Beanstalk](https://strapi.io/blog/how-to-deploy-strapi-docker-container-on-aws-elastic-beanstalk)
+
+---
+### 👇 Below is auto generated README 👇
+---
+
 # 🚀 Getting started with Strapi
 
 Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
