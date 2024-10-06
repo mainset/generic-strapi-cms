@@ -11,7 +11,11 @@ module.exports = ({ env }) => {
         port,
         database,
         user,
-        password
+        password,
+        // https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-node-js
+        ssl: {
+          rejectUnauthorized: false,
+        },
       },
       debug: false,
     },
